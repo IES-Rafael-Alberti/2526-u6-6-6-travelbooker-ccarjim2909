@@ -143,21 +143,15 @@ En el proyecto se crean objetos para representar las reservas de la agencia de v
 
 Por ejemplo, para crear una reserva de vuelo se utiliza el método `creaInstancia`  de la clase `ReservaVuelo`:
 
-    val reserva = ReservaVuelo.creaInstancia(
-    descripcion,
-    origen,
-    destino,
-    horaVuelo
-    )
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/c697ef048ad4718fdffe000444dae4d1b1f6e95d/src/main/kotlin/servicio/ReservaService.kt#L20
 
 Después de crear el objeto, se almacena en el repositorio mediante el método `agregar`:
 
-    repositorio.agregar(reserva)
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/c697ef048ad4718fdffe000444dae4d1b1f6e95d/src/main/kotlin/servicio/ReservaService.kt#L22
 
 También se crean objetos al iniciar la aplicación, como el repositorio y el servicio:
 
-    val repositorio = ReservaRepositoryMemoria()
-    val servicio = ReservaService(repositorio)
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/c697ef048ad4718fdffe000444dae4d1b1f6e95d/src/main/kotlin/presentacion/Main.kt#L82-L83
 
 Estos objetos permiten gestionar la creación y almacenamiento de las reservas.
 
@@ -171,15 +165,13 @@ En Kotlin los métodos estáticos se implementan mediante `companion object`.
 
 En mi proyecto se utilizan en las clases `ReservaVuelo`  y `ReservaHotel`  para crear nuevas reservas mediante el método `creaInstancia`.
 
-    companion object {
-    fun creaInstancia(...)
-    }
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/c697ef048ad4718fdffe000444dae4d1b1f6e95d/src/main/kotlin/dominio/ReservaHotel.kt#L29-L42
 
 El objetivo de este método es controlar la creación de objetos y validar los datos antes de generar la reserva.
 
 Este método se llama desde la clase `ReservaService`:
 
-    ReservaVuelo.creaInstancia(...)
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/c697ef048ad4718fdffe000444dae4d1b1f6e95d/src/main/kotlin/servicio/ReservaService.kt#L20
 
 Se decidió hacerlo estático porque no es necesario tener una instancia previa para poder crear una nueva reserva.
 
@@ -203,9 +195,7 @@ En el proyecto se definieron varias clases que representan los objetos del siste
 
 La clase abstracta `Reserva`  contiene las propiedades comunes de todas las reservas, como el `id`, la `fechaCreacion`  y la `descripcion`.
 
-    abstract class Reserva(\
-    val descripcion: String\
-    )
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/c697ef048ad4718fdffe000444dae4d1b1f6e95d/src/main/kotlin/dominio/Reserva.kt#L13-L21
 
 A partir de esta clase se crean otras clases más específicas como `ReservaVuelo`  y `ReservaHotel`, que añaden propiedades propias como el origen y destino del vuelo o la ubicación del hotel.
 
@@ -220,10 +210,7 @@ En el proyecto se utiliza herencia mediante la clase abstracta `Reserva`. Las cl
 
 También se utiliza una interfaz llamada `IReservaRepository`  que define los métodos para guardar y obtener reservas.
 
-    interface IReservaRepository {\
-    fun agregar(reserva: Reserva)\
-    fun obtenerTodas(): List<Reserva>\
-    }
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/f347c31aa3d980cad07d117907684353fceabb05/src/main/kotlin/datos/IReservaRepository.kt#L10-L15
 
 La clase `ReservaService`  depende de esta interfaz en lugar de depender de una implementación concreta, aplicando el principio **DIP**  de SOLID.
 
@@ -256,17 +243,19 @@ En el proyecto se utilizan algunas librerías estándar de Java y Kotlin.
 
 Por ejemplo:
 
-    import java.time.LocalDateTime
-
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/f347c31aa3d980cad07d117907684353fceabb05/src/main/kotlin/dominio/Reserva.kt#L3
+  
 Esta librería se utiliza para registrar la fecha de creación de cada reserva:
 
-    val fechaCreacion: LocalDateTime = LocalDateTime.now()
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/f347c31aa3d980cad07d117907684353fceabb05/src/main/kotlin/dominio/Reserva.kt#L17
 
 También se utiliza:
 
-    import java.util.UUID
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/f347c31aa3d980cad07d117907684353fceabb05/src/main/kotlin/dominio/Reserva.kt#L4
 
 para generar identificadores únicos para cada reserva.
+
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/f347c31aa3d980cad07d117907684353fceabb05/src/main/kotlin/dominio/Reserva.kt#L15
 
 Estas librerías permiten añadir funcionalidades útiles sin tener que programarlas manualmente.
 
@@ -289,15 +278,19 @@ El proyecto se ha documentado utilizando **comentarios KDoc**  en cada clase y f
 ## **Criterio global 9: Genéricos**
 - **(6.f)**: Muestra ejemplos de tu código sobre cómo has implementado una clase con genéricos. ¿Qué beneficio has obtenido?
 
-En el proyecto se utilizan genéricos en las listas que almacenan las reservas.
+En este proyecto **no se ha implementado un repositorio genérico real**, sino que se ha utilizado un repositorio concreto (`ReservaRepositoryMemoria`) que solo almacena objetos de tipo `Reserva`.
 
-Por ejemplo:
+Sin embargo, se puede explicar cómo se aplicaría un **genérico**  en este contexto:
 
-    fun obtenerTodas(): List<Reserva>
+Si quisiéramos aplicar genéricos en el proyecto, podríamos crear un repositorio genérico que acepte cualquier tipo `T`, en lugar de depender de un tipo concreto como `Reserva`. Por ejemplo, se podría definir una clase:
 
-Esto permite almacenar en la misma lista diferentes tipos de reservas como `ReservaVuelo`  y `ReservaHotel`.
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/8c8cfd72bd040f5075ea06c299189ab34d7bede0/src/main/kotlin/datos/RepositorioGenerico.kt#L3-L7
 
-El uso de genéricos mejora la flexibilidad del código y evita errores de tipo.
+ Esto permitiría almacenar cualquier tipo de objeto (por ejemplo `ReservaVuelo`, `ReservaHotel`  o cualquier otro tipo) sin duplicar código.
+
+El beneficio de usar genéricos es **flexibilidad y reutilización de código**, ya que se podría crear un repositorio único que funcione para distintos tipos de datos sin cambiar la lógica.
+
+En mi proyecto no se ha usado directamente porque el enunciado solo pedía manejar reservas, pero el concepto de genéricos queda claro y podría aplicarse fácilmente en futuros desarrollos.
 
 * * * * *
 
@@ -306,13 +299,13 @@ El uso de genéricos mejora la flexibilidad del código y evita errores de tipo.
 
 En el proyecto se utilizan expresiones regulares para validar el formato de la hora de vuelo.
 
-    val regexHora = Regex("^([01]?[0-9]|2[0-3]):[0-5][0-9]$")
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/8c8cfd72bd040f5075ea06c299189ab34d7bede0/src/main/kotlin/dominio/ReservaVuelo.kt#L34
 
 Esta expresión comprueba que la hora tenga el formato **HH:mm**.
 
 Después se valida utilizando:
 
-    require(regexHora.matches(horaVuelo))
+  https://github.com/IES-Rafael-Alberti/2526-u6-6-6-travelbooker-ccarjim2909/blob/8c8cfd72bd040f5075ea06c299189ab34d7bede0/src/main/kotlin/dominio/ReservaVuelo.kt#L36-L38
 
 El beneficio es que se asegura que el usuario introduce una hora válida antes de crear la reserva.
 
