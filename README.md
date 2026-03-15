@@ -135,35 +135,184 @@ La aplicación debe seguir una **arquitectura en capas**, separando claramente:
 # Preguntas para la Evaluación
 
 Este conjunto de preguntas está diseñado para ayudarte a reflexionar sobre cómo has aplicado los criterios de evaluación en tu proyecto. Al responderlas, [**asegúrate de hacer referencia y enlazar al código relevante**](https://docs.github.com/es/get-started/writing-on-github/working-with-advanced-formatting/creating-a-permanent-link-to-a-code-snippet) en tu `README.md`, facilitando así la evaluación de tu trabajo.
-
-#### **Criterio global 1: Instancia objetos y hacer uso de ellos**
+* * * * *
+## **Criterio global 1: Instancia objetos y hacer uso de ellos**
 - **(2.a, 2.b, 2.c, 2.d, 2.f, 2.h, 4.e, 4.f)**: Describe cómo has instanciado y utilizado objetos en tu proyecto. ¿Cómo has aplicado los constructores y pasado parámetros a los métodos? Proporciona ejemplos específicos de tu código.
+  
+En el proyecto se crean objetos para representar las reservas de la agencia de viajes. Estas reservas se instancian utilizando métodos que reciben parámetros con la información necesaria.
 
-#### **Criterio global 2: Crear y llamar métodos estáticos**
+Por ejemplo, para crear una reserva de vuelo se utiliza el método `creaInstancia`  de la clase `ReservaVuelo`:
+
+    val reserva = ReservaVuelo.creaInstancia(
+    descripcion,
+    origen,
+    destino,
+    horaVuelo
+    )
+
+Después de crear el objeto, se almacena en el repositorio mediante el método `agregar`:
+
+    repositorio.agregar(reserva)
+
+También se crean objetos al iniciar la aplicación, como el repositorio y el servicio:
+
+    val repositorio = ReservaRepositoryMemoria()
+    val servicio = ReservaService(repositorio)
+
+Estos objetos permiten gestionar la creación y almacenamiento de las reservas.
+
+* * * * *
+
+## **Criterio global 2: Crear y llamar métodos estáticos**
 - **(4.h)**: ¿Has definido algún método/propiedad estático en tu proyecto? ¿Cuál era el objetivo y por qué consideraste que debía ser estático en lugar de un método/propiedad de instancia?
 - **(2.e)**: ¿En qué parte del código se llama a un método estático o se utiliza la propiedad estática?
 
-#### **Criterio global 3: Uso de entornos**
+En Kotlin los métodos estáticos se implementan mediante `companion object`.
+
+En mi proyecto se utilizan en las clases `ReservaVuelo`  y `ReservaHotel`  para crear nuevas reservas mediante el método `creaInstancia`.
+
+    companion object {
+    fun creaInstancia(...)
+    }
+
+El objetivo de este método es controlar la creación de objetos y validar los datos antes de generar la reserva.
+
+Este método se llama desde la clase `ReservaService`:
+
+    ReservaVuelo.creaInstancia(...)
+
+Se decidió hacerlo estático porque no es necesario tener una instancia previa para poder crear una nueva reserva.
+
+* * * * *
+
+## **Criterio global 3: Uso de entornos**
 - **(2.i)**: ¿Cómo utilizaste el IDE para el desarrollo de tu proyecto? Describe el proceso de creación, compilación, y prueba de tu programa.
 
-#### **Criterio global 4: Definir clases y su contenido**
+Para el desarrollo del proyecto utilicé un IDE como IntelliJ IDEA.
+
+Primero creé el proyecto en Kotlin y después organicé el código en diferentes paquetes (`dominio`, `datos`, `servicios`  y `presentacion`) para separar las capas de la aplicación.
+
+El IDE me permitió escribir el código con ayuda del autocompletado, detectar errores y ejecutar el programa para probar su funcionamiento. Las pruebas se realizaron utilizando el menú de consola para crear y listar reservas.
+
+* * * * *
+
+## **Criterio global 4: Definir clases y su contenido**
 - **(4.a, 4.b, 4.c, 4.d, 4.g)**: Explica sobre un ejemplo de tu código, cómo definiste las clases en tu proyecto, es decir como identificaste las de propiedades, métodos y constructores y modificadores del control de acceso a métodos y propiedades, para representar al objeto del mundo real. ¿Cómo contribuyen estas clases a la solución del problema que tu aplicación aborda?
 
-#### **Criterio global 5: Herencia y uso de clases abstractas e interfaces**
+En el proyecto se definieron varias clases que representan los objetos del sistema de reservas.
+
+La clase abstracta `Reserva`  contiene las propiedades comunes de todas las reservas, como el `id`, la `fechaCreacion`  y la `descripcion`.
+
+    abstract class Reserva(\
+    val descripcion: String\
+    )
+
+A partir de esta clase se crean otras clases más específicas como `ReservaVuelo`  y `ReservaHotel`, que añaden propiedades propias como el origen y destino del vuelo o la ubicación del hotel.
+
+Estas clases permiten representar los diferentes tipos de reservas que puede gestionar la aplicación.
+
+* * * * *
+
+## **Criterio global 5: Herencia y uso de clases abstractas e interfaces**
 - **(4.g, 7.a, 7.b, 7.c, 7.i, 7.j)**: Describe sobre tu código cómo has implementado la herencia y/o utilizado interfaces en tu proyecto. ¿Por qué elegiste este enfoque y cómo beneficia a la estructura de tu aplicación? ¿De qué manera has utilizado los principios SOLID para mejorar el diseño de tu proyecto? Mostrando tu código, contesta qué principios has utilizado y qué beneficio has obtenido.
 
-#### **Criterio global 6: Diseño de jerarquía de clases**
+En el proyecto se utiliza herencia mediante la clase abstracta `Reserva`. Las clases `ReservaVuelo`  y `ReservaHotel`  heredan de esta clase y reutilizan sus propiedades comunes.
+
+También se utiliza una interfaz llamada `IReservaRepository`  que define los métodos para guardar y obtener reservas.
+
+    interface IReservaRepository {\
+    fun agregar(reserva: Reserva)\
+    fun obtenerTodas(): List<Reserva>\
+    }
+
+La clase `ReservaService`  depende de esta interfaz en lugar de depender de una implementación concreta, aplicando el principio **DIP**  de SOLID.
+
+Esto hace que el diseño sea más flexible y fácil de modificar.
+
+* * * * *
+
+## **Criterio global 6: Diseño de jerarquía de clases**
 - **(7.d, 7.e, 7.f, 7.g)**: Presenta la jerarquía de clases que diseñaste. ¿Cómo probaste y depuraste esta jerarquía para asegurar su correcto funcionamiento? ¿Qué tipo de herencia has utilizado: Especificación, Especialización, Extensión, Construcción?
 
-#### **Criterio global 7: Librerías de clases**
+La jerarquía de clases del proyecto es la siguiente:
+
+    Reserva
+    │
+    ├─ ReservaVuelo
+    └─ ReservaHotel
+
+`Reserva`  es la clase base y las otras dos clases son especializaciones de esta.
+
+Se realizaron pruebas ejecutando el programa y creando diferentes reservas desde el menú de consola para comprobar que la jerarquía funcionaba correctamente.
+
+El tipo de herencia utilizado es **especialización**, ya que cada clase representa un tipo específico de reserva.
+
+* * * * *
+
+## **Criterio global 7: Librerías de clases**
 - **(2.g, 4.i)**: Describe cualquier librería externa que hayas incorporado en tu proyecto. Explica cómo y por qué las elegiste, y cómo las incorporaste en tu proyecto. ¿Cómo extendió la funcionalidad de tu aplicación? Proporciona ejemplos específicos de su uso en tu proyecto.
 
-#### **Criterio global 8: Documentado**
+En el proyecto se utilizan algunas librerías estándar de Java y Kotlin.
+
+Por ejemplo:
+
+    import java.time.LocalDateTime
+
+Esta librería se utiliza para registrar la fecha de creación de cada reserva:
+
+    val fechaCreacion: LocalDateTime = LocalDateTime.now()
+
+También se utiliza:
+
+    import java.util.UUID
+
+para generar identificadores únicos para cada reserva.
+
+Estas librerías permiten añadir funcionalidades útiles sin tener que programarlas manualmente.
+
+* * * * *
+
+## **Criterio global 8: Documentado**
 - **(7.h)**: Muestra ejemplos de cómo has documentado y comentado tu código. ¿Que herramientas has utilizado? ¿Cómo aseguras que tu documentación aporte valor para la comprensión, mantenimiento y depuración del código?
 
-#### **Criterio global 9: Genéricos**
+El proyecto se ha documentado utilizando **comentarios KDoc**  en cada clase y función principal, además de nombres descriptivos y organización por paquetes.
+
+-   Cada clase (`Reserva`, `ReservaVuelo`, `ReservaHotel`, `ReservaService`, `IReservaRepository`, `ReservaRepositoryMemoria`) tiene un comentario que explica su **propósito**  y las **propiedades o métodos clave**.
+
+-   `Main.kt`  también está documentado para explicar que es el **punto de entrada**, el **menú de consola**, y las funciones que crean o listan reservas.
+
+-   Los comentarios se han mantenido **resumidos**  para no sobrecargar el código, pero permiten entender **qué hace cada parte y cómo interactúan las clases**.
+
+-   Además, se ha usado **estructura de paquetes y nombres claros**  como otra forma de documentación implícita, facilitando la comprensión y mantenimiento del proyecto.
+* * * * *
+
+## **Criterio global 9: Genéricos**
 - **(6.f)**: Muestra ejemplos de tu código sobre cómo has implementado una clase con genéricos. ¿Qué beneficio has obtenido?
 
-#### **Criterio global 10: Expresiones Regulares**
+En el proyecto se utilizan genéricos en las listas que almacenan las reservas.
+
+Por ejemplo:
+
+    fun obtenerTodas(): List<Reserva>
+
+Esto permite almacenar en la misma lista diferentes tipos de reservas como `ReservaVuelo`  y `ReservaHotel`.
+
+El uso de genéricos mejora la flexibilidad del código y evita errores de tipo.
+
+* * * * *
+
+## **Criterio global 10: Expresiones Regulares**
 - **(6.g)**: Muestra ejemplos de tu código donde hayas utilizado las expresiones regulares. ¿Qué beneficio has obtenido?
+
+En el proyecto se utilizan expresiones regulares para validar el formato de la hora de vuelo.
+
+    val regexHora = Regex("^([01]?[0-9]|2[0-3]):[0-5][0-9]$")
+
+Esta expresión comprueba que la hora tenga el formato **HH:mm**.
+
+Después se valida utilizando:
+
+    require(regexHora.matches(horaVuelo))
+
+El beneficio es que se asegura que el usuario introduce una hora válida antes de crear la reserva.
 
