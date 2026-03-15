@@ -13,8 +13,3 @@ interface IReservaRepository {
 
     fun obtenerTodas(): List<Reserva>
 }
-
-/***
- *
-
- */
